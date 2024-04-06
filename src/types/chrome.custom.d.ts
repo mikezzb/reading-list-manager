@@ -13,7 +13,6 @@ declare namespace chrome {
     }
 
     interface Entry {
-      id: string;
       title: string;
       url: string;
       creationTime: number;
@@ -21,9 +20,9 @@ declare namespace chrome {
     }
 
     export function addEntry(entry: EntryToAddOrUpdate): Promise<void>;
-    export function removeEntry(options: { id: string }): Promise<void>;
+    export function removeEntry(options: { url: string }): Promise<void>;
     export function updateEntry(options: {
-      id: string;
+      url: string;
       hasBeenRead: boolean;
     }): Promise<void>;
     export function query(options?: QueryOptions): Promise<Entry[]>;

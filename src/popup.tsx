@@ -1,17 +1,16 @@
 import React, { useContext, useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
-import { Dropdown } from "./ui/Dropdown";
+import {
+  Caption,
+  Header,
+  PopupWrapper,
+  TimeConfigRow,
+  TimeInput,
+  TimeUnitOption,
+  TimeUnitSelect,
+} from "./ui";
 import { ExpireManagerContext, ExpireManagerProvider } from "./core/context";
-import { TIME_UNIT_OPTIONS, DEFAULT_TIME_UNIT } from "./core/config";
-import styled from "styled-components";
-
-// input styled component for time value with material ui like style
-const TimeInput = styled.input`
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  margin-right: 10px;
-`;
+import { TIME_UNIT_OPTIONS } from "./core/config";
 
 const Popup = () => {
   const expireManager = useContext(ExpireManagerContext);
@@ -24,20 +23,31 @@ const Popup = () => {
   }, [expireManager]);
 
   return (
-    <div>
-      <h1>Popup</h1>
-      <TimeInput
-        type="number"
-        min={1}
-        value={expireManager!.expireAfterValue}
-        onChange={(e) => expireManager!.setExpireValue(+e.target.value)}
-      />
-      <Dropdown
-        options={TIME_UNIT_OPTIONS}
-        selectedOption={expireManager!.expireAfterUnit}
-        onSelect={expireManager!.setExpireUnit}
-      />
-    </div>
+    <PopupWrapper>
+      <Header>Reading List Manager</Header>
+      <Caption>Your reading list links will expire (be deleted) after:</Caption>
+      <TimeConfigRow>
+        <TimeInput
+          type="number"
+          min={1}
+          value={expireManager!.expireAfterValue}
+          onChange={(e) => expireManager!.setExpireValue(+e.target.value)}
+        />
+        <TimeUnitSelect
+          onChange={(e) => expireManager!.setExpireUnit(e.target.value)}
+        >
+          {TIME_UNIT_OPTIONS.map((option, index) => (
+            <TimeUnitOption
+              key={index}
+              value={option}
+              selected={expireManager!.expireAfterUnit === option}
+            >
+              {option}
+            </TimeUnitOption>
+          ))}
+        </TimeUnitSelect>
+      </TimeConfigRow>
+    </PopupWrapper>
   );
 };
 
