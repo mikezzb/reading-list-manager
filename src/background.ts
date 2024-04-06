@@ -1,6 +1,8 @@
-function polling() {
-  // console.log("polling");
-  setTimeout(polling, 1000 * 30);
-}
+import { ReadingListManager } from "./core/ReadingListManager";
+import { EXPIRE_CHECK_INTERVAL } from "./core/config";
+import { createPolling } from "./core/util";
 
-polling();
+const readingListManager = ReadingListManager.getInstance();
+const cleanupSchedule = createPolling(readingListManager.clearExpiredItems, EXPIRE_CHECK_INTERVAL);
+
+cleanupSchedule();
