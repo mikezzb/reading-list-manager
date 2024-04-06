@@ -1,9 +1,10 @@
 import { ExpireManager } from "./ExpireManager";
+import { STORAGE_KEYS } from "./config";
+import { getItem } from "./storage";
 
 export class ReadingListManager {
   private static instance: ReadingListManager;
   public items: Array<chrome.readingList.Entry> = [];
-  private expireManager: ExpireManager = ExpireManager.getInstance();
 
   private constructor() {
     this.clearExpiredItems = this.clearExpiredItems.bind(this);
@@ -22,17 +23,17 @@ export class ReadingListManager {
   }
 
   public async clearExpiredItems() {
+    const paused = await getItem(STORAGE_KEYS.PAUSE_CLEANUP);
+    if (paused) return;
     await this.getLatestItems();
-    console.log(`Checking for expired items...`);
-    console.log(`Items:`, this.items);
+    const expireAfterUnit = await getItem(STORAGE_KEYS.EXPIRE_AFTER_UNIT);
+    const expireAfterValue = await getItem(STORAGE_KEYS.EXPIRE_AFTER_VALUE);
     const expiredItems = this.items.filter((item) =>
-      this.expireManager.isExpired(item.creationTime)
+      ExpireManager.isExpired(item.creationTime, expireAfterUnit, expireAfterValue)
     );
     for (const item of expiredItems) {
-      console.log(`Removing expired item:`, item);
       if (!item.url) continue;
-      console.log(`Rly Removing expired item: ${item.url}`);
-      // await chrome.readingList.removeEntry({ url: item.url });
+      await chrome.readingList.removeEntry({ url: item.url });
     }
   }
 }
