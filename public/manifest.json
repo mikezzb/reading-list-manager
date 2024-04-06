@@ -1,25 +1,14 @@
 {
   "manifest_version": 3,
 
-  "name": "Chrome Extension TypeScript Starter",
-  "description": "Chrome Extension, TypeScript, Visual Studio Code",
+  "name": "Reading List Manager: Set Expiry for Links",
+  "description": "Effortlessly set expiry dates for your Chrome Reading List links. Automatically remove expired links with ease.",
   "version": "1.0",
-
-  "options_ui": {
-    "page": "options.html"
-  },
 
   "action": {
     "default_icon": "icon.png",
     "default_popup": "popup.html"
   },
-
-  "content_scripts": [
-      {
-          "matches": ["<all_urls>"],
-          "js": ["js/vendor.js", "js/content_script.js"]
-      }
-  ],
 
   "background": {
     "service_worker": "js/background.js"
@@ -27,9 +16,5 @@
 
   "permissions": [
     "storage", "readingList"
-  ],
-
-  "host_permissions": [
-    "<all_urls>"
   ]
 }
