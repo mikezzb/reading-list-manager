@@ -9,11 +9,11 @@ import {
   TimeUnitOption,
   TimeUnitSelect,
 } from "./ui";
-import { ExpireManagerContext, ExpireManagerProvider } from "./core/context";
 import { TIME_UNIT_OPTIONS } from "./core/config";
+import { ExpireManager } from "./core/ExpireManager";
 
 const Popup = () => {
-  const expireManager = useContext(ExpireManagerContext);
+  const expireManager = ExpireManager.getInstance();
   const [_, forceUpdate] = useState({});
 
   useEffect(() => {
@@ -55,8 +55,6 @@ const root = createRoot(document.getElementById("root")!);
 
 root.render(
   <React.StrictMode>
-    <ExpireManagerProvider>
-      <Popup />
-    </ExpireManagerProvider>
+    <Popup />
   </React.StrictMode>
 );
