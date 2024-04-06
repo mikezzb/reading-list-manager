@@ -25,6 +25,7 @@ export class ReadingListManager {
     await this.getLatestItems();
     const expiredItems = this.items.filter((item) => this.expireManager.isExpired(item.creationTime));
     for (const item of expiredItems) {
+      console.log(`Removing expired item: ${item.title}`);
       await chrome.readingList.removeEntry({ id: item.id });
     }
   }

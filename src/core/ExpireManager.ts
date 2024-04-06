@@ -1,22 +1,28 @@
 import PersistedStore from "./PersistedStore";
-import { day2min, min2ms } from "./util";
+import { TIME_UNIT_TO_MS } from "./config";
 
-type ExtensionConfig = {
-  expireAfterInMins?: number;
-}
+type ExpireConfig = {
+  expireAfterValue?: number;
+  expireAfterUnit?: string;
+};
 
-const defaultConfig: ExtensionConfig = {
-  expireAfterInMins: day2min(7)
-}
+const defaultConfig: ExpireConfig = {
+  expireAfterUnit: "day",
+  expireAfterValue: 7,
+};
 
-const onLoadKeys = ["expireAfterInMins"];
-const onResetKeys = ["expireAfterInMins"];
+const onLoadKeys = ["expireAfterUnit", "expireAfterValue"];
+const onResetKeys = onLoadKeys;
 
 export class ExpireManager extends PersistedStore {
   private static instance: ExpireManager;
+  public expireAfterValue: number = defaultConfig.expireAfterValue as number;
+  public expireAfterUnit: string = defaultConfig.expireAfterUnit as string;
 
   private constructor() {
     super(onLoadKeys, onResetKeys, defaultConfig);
+    this.setExpireUnit = this.setExpireUnit.bind(this);
+    this.setExpireValue = this.setExpireValue.bind(this);
   }
 
   public static getInstance(): ExpireManager {
@@ -27,11 +33,19 @@ export class ExpireManager extends PersistedStore {
   }
 
   public get expireDurationInMs() {
-    return min2ms(this.expireAfterInMins);
+    return this.expireAfterValue * TIME_UNIT_TO_MS[this.expireAfterUnit];
   }
 
-  public set expireAfterInMins(value: number) {
-    this.setStore("expireAfterInMins", value);
+  public setExpireValue(value: number) {
+    // validation
+    if (value < 1) {
+      value = 1;
+    }
+    this.setStore("expireAfterValue", value);
+  }
+
+  public setExpireUnit(unit: string) {
+    this.setStore("expireAfterUnit", unit);
   }
 
   public isExpired(timestamp: number): boolean {
