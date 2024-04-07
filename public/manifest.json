@@ -14,7 +14,5 @@
     "service_worker": "js/background.js"
   },
 
-  "permissions": [
-    "storage", "readingList"
-  ]
+  "permissions": ["storage", "readingList", "alarms"]
 }
